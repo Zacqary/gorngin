@@ -1,8 +1,8 @@
 define(['services/portraitSvc',
         'services/spriteClasses',
         'services/cameraSvc',
-        'services/musicSvc',
-        //'services/keyboardSvc',
+        'services/audioSvc',
+        'services/keyboardSvc',
         'services/dialogue/config',
         'services/dialogue/dialogueHelpers',
         'services/dialogue/WordWrapper',
@@ -10,7 +10,7 @@ define(['services/portraitSvc',
         ],
 
 function (portraitSvc, spriteClasses, cameraSvc,
-                     musicSvc, /*keyboardSvc,*/ dialogueConfig, dialogueHelpers,
+                     audioSvc, keyboardSvc, dialogueConfig, dialogueHelpers,
                      WordWrapper, completeDialogueSet){
   var svc = {};
   svc.current = {};
@@ -318,7 +318,7 @@ function (portraitSvc, spriteClasses, cameraSvc,
     tk = textKey ? textKey : choice.textKey;
     var choiceId = app.currentState + '_' + svc.current.dialogueJSONID +
                    '-' + fu + '-' + tk;
-    if ((app.sm.choicesSelected.indexOf(choiceId) === -1) ||
+    if ((app.stateManager.choicesSelected.indexOf(choiceId) === -1) ||
          svc.current.dialogueJSONID.toLowerCase().startsWith('move') ||
          svc.current.dialogueJSONID.toLowerCase().startsWith('use') ||
          svc.current.dialogueJSONID.toLowerCase() === 'talk' ||
@@ -375,7 +375,7 @@ function (portraitSvc, spriteClasses, cameraSvc,
       });
 
       // register keypad
-      //_this.numberInputKey = keyboardSvc.registerNumberKey(parseInt(i) + 1);
+      _this.numberInputKey = keyboardSvc.registerNumberKey(parseInt(i) + 1);
       if (_this.numberInputKey) {
         _this.numberInputKey.followup = _this.choice.followup;
         _this.numberInputKey.textKey = _this.choice.textKey;
@@ -391,11 +391,11 @@ function (portraitSvc, spriteClasses, cameraSvc,
   };
 
   svc.choiceFollowup = function(choice){
-    app.dm.callback = null;
+    app.stateManager.currentDialogue.callback = null;
     var choiceId = app.currentState + '_' + svc.current.dialogueJSONID +
                   '-' + choice.followup + '-' + choice.textKey;
-    if (app.sm.choicesSelected.indexOf(choiceId) === -1) {
-      app.sm.choicesSelected.push(choiceId);
+    if (app.stateManager.choicesSelected.indexOf(choiceId) === -1) {
+      app.stateManager.choicesSelected.push(choiceId);
     }
     //game.sound.play(svc.sounds.click.sound, svc.sounds.click.vol, false);
     svc.destroyDialogueGroup();
@@ -519,7 +519,7 @@ function (portraitSvc, spriteClasses, cameraSvc,
     _this.inputSprite.priorityID = 1;
     game.add.tween(_this.followupIcon).to({ alpha: 1 }, 1000,
                                  Phaser.Easing.Linear.None,true);
-    app.dm.followupIcon = _this.followupIcon;
+    app.stateManager.currentDialogue.followupIcon = _this.followupIcon;
     return _this;
   };
 
@@ -553,7 +553,7 @@ function (portraitSvc, spriteClasses, cameraSvc,
         svc.destroyDialogueGroup();
       });
     }
-    app.dm.dialogueInitialized = false;
+    app.stateManager.currentDialogue.dialogueInitialized = false;
     if (this.callback) {
       this.callback();
     } else if (svc.dialogueCallback) {
@@ -562,14 +562,14 @@ function (portraitSvc, spriteClasses, cameraSvc,
   };
 
   svc.getCurrentDialogueElement = function(){
-    app.dm.currentDialogueJSON = svc.getOriginalDialogueJson();
-    var dialogueKey = app.dm.currentDialogueKey;
+    app.stateManager.currentDialogue.currentDialogueJSON = svc.getOriginalDialogueJson();
+    var dialogueKey = app.stateManager.currentDialogue.currentDialogueKey;
     if (dialogueKey === "undefined" || dialogueKey === ""){ return false; }
 
-    for (var i = 0; i < app.dm.currentDialogueJSON.elements.length; i ++){
-      if (app.dm.currentDialogueJSON.elements[i].title === dialogueKey){
+    for (var i = 0; i < app.stateManager.currentDialogue.currentDialogueJSON.elements.length; i ++){
+      if (app.stateManager.currentDialogue.currentDialogueJSON.elements[i].title === dialogueKey){
         var elementCopy = jQuery.extend(true, {},
-                          app.dm.currentDialogueJSON.elements[i]);
+                          app.stateManager.currentDialogue.currentDialogueJSON.elements[i]);
         return elementCopy;
       }
     }
@@ -613,7 +613,7 @@ function (portraitSvc, spriteClasses, cameraSvc,
     var textJson = jQuery.extend(true, {}, textJsonOrig);
     svc.current = {};
     svc.previousElement = {};
-    app.dm.dialogueInitialized = true;
+    app.stateManager.currentDialogue.dialogueInitialized = true;
 
     if (cb) {
       svc.dialogueCallback = cb;
@@ -626,15 +626,15 @@ function (portraitSvc, spriteClasses, cameraSvc,
     }
 
     // store current dialogue/cb for access by handler
-    app.dm.currentDialogueJSON = textJson;
+    app.stateManager.currentDialogue.currentDialogueJSON = textJson;
     if (cb){
-      app.dm.callback = cb;
+      app.stateManager.currentDialogue.callback = cb;
     } else {
-      app.dm.callback = null;
+      app.stateManager.currentDialogue.callback = null;
     }
 
     //Pass dialogue to handler
-    if (initElement && dialogueHelpers.hasElement(initElement, app.dm.currentDialogueJSON)) {
+    if (initElement && dialogueHelpers.hasElement(initElement, app.stateManager.currentDialogue.currentDialogueJSON)) {
       svc.advanceDialogueState(initElement);
     } else {
       svc.advanceDialogueState('init');
@@ -642,7 +642,7 @@ function (portraitSvc, spriteClasses, cameraSvc,
   };
 
   svc.advanceDialogueState = function(dialogueKey, goBack, cb){
-    //keyboardSvc.reset();
+    keyboardSvc.reset();
     svc.lockDialogue = true;
     app.dialogueSelections = [];
     app.selectedItem = null;
@@ -656,7 +656,7 @@ function (portraitSvc, spriteClasses, cameraSvc,
       return false;
     }
 
-    app.dm.currentDialogueKey = dialogueKey;
+    app.stateManager.currentDialogue.currentDialogueKey = dialogueKey;
 
     var currentDialogueElement = svc.getCurrentDialogueElement();
     currentDialogueElement.body = dialogueHelpers.setTextConditionally(currentDialogueElement.body);
@@ -675,9 +675,9 @@ function (portraitSvc, spriteClasses, cameraSvc,
 
     if (!currentDialogueElement || !currentDialogueElement.body) {
       // If a callback was provided for the end of the dialogue, call it now
-      if (app.dm.callback){
-        app.dm.callback();
-        app.dm.callback = null;
+      if (app.stateManager.currentDialogue.callback){
+        app.stateManager.currentDialogue.callback();
+        app.stateManager.currentDialogue.callback = null;
       }
       return false;
     }
@@ -729,8 +729,8 @@ function (portraitSvc, spriteClasses, cameraSvc,
   svc.pushItemsIntoInventory = function() {
     if (svc.current.items){
       for (var i = 0; i < svc.current.items.length; i++){
-        if (svc.current.items[i] && app.sm.inv.indexOf(svc.current.items[i]) === -1){
-          app.sm.inv.push(svc.current.items[i]);
+        if (svc.current.items[i] && app.stateManager.inv.indexOf(svc.current.items[i]) === -1){
+          app.stateManager.inv.push(svc.current.items[i]);
         }
       }
     }

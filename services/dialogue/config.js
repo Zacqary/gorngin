@@ -3,37 +3,37 @@ function() {
   var svc = {};
   var _styles = {
     basic: {
-      font: "16px " + gameConfig.defaultfont,
+      font: "16px " + app.config.defaultfont,
       fill: "#fff",
       align: "left",
       wordWrap: true,
     },
     speech: {
-      font: "16px " + gameConfig.defaultfont,
+      font: "16px " + app.config.defaultfont,
       fill: "#fff",
       align: "left",
       wordWrap: true,
     },
     name: {
-      font: "16px " + gameConfig.defaultfont,
+      font: "16px " + app.config.defaultfont,
       fill: "#ffffaa",
       align: "left",
       wordWrap: true,
     },
     selectedchoice: {
-      font: "17px " + gameConfig.defaultfont,
+      font: "17px " + app.config.defaultfont,
       fill: "#aaaaff",
       align: "left",
       wordWrap: true,
     },
     unselectedchoice: {
-      font: "17px " + gameConfig.defaultfont,
+      font: "17px " + app.config.defaultfont,
       fill: "#fff",
       align: "left",
       wordWrap: true,
     },
     hover: {
-      font: "18px " + gameConfig.defaultfont,
+      font: "18px " + app.config.defaultfont,
       fill: "#aaffaa",
       align: "left",
       wordWrap: true
@@ -55,17 +55,17 @@ function() {
       vol: 0.2
     },
     click: {
-      sound: 'begingame',
+      sound: 'confirm',
       vol: 0.2
     }
   };
 
   svc.config = {
-    height: gameConfig.dialogue.height,
+    height: app.config.dialogue.height,
     background: false,
-    borderLeft: gameConfig.dialogue.openFrom === 'TOP' ? 10 : 5,
-    borderTop: gameConfig.dialogue.openFrom === 'TOP' ? 20 : game.height - gameConfig.dialogue.height,
-    openFrom: gameConfig.dialogue.openFrom,
+    borderLeft: app.config.dialogue.openFrom === 'TOP' ? 10 : 5,
+    borderTop: app.config.dialogue.openFrom === 'TOP' ? 20 : game.height - app.config.dialogue.height,
+    openFrom: app.config.dialogue.openFrom,
     getTextWidth: function(hasPortrait) {
       return hasPortrait ? 500 : 630;
     },

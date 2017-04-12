@@ -1,21 +1,15 @@
 define(['services/portraitSvc',
         'services/dialogue/TextParser',
-        'services/dialogue/config',
-        'services/menu/menuSvc'
+        'services/dialogue/config'
         ],
 
-function(portraitSvc, TextParser, dialogueConfig, menuSvc) {
+function(portraitSvc, TextParser, dialogueConfig) {
 
   var svc = {};
 
   function _animateDialogue() {
     // don't animate the menu dialogue unless it's the journal
-    if (gameConfig.unsupportedBrowser && !svc.current.speaker) {
-      svc.current.animateDialogue = false;
-    } else if (menuSvc.menuOptions.journal &&
-        app.menuActivated === menuSvc.menuOptions.journal.index) {
-      svc.current.animateDialogue = true;
-    } else if (app.menuActivated > 0){
+    if (app.config.unsupportedBrowser && !svc.current.speaker) {
       svc.current.animateDialogue = false;
     } else {
       svc.current.animateDialogue = true;
@@ -55,8 +49,8 @@ function(portraitSvc, TextParser, dialogueConfig, menuSvc) {
     _this.line = [];
     _this.wordIndex = 0;
     _this.lineIndex = 0;
-    _this.wordDelay = gameConfig && gameConfig.messagespeed === 'fast' ? 10 : 40;
-    _this.lineDelay = gameConfig && gameConfig.messagespeed === 'fast' ? 10 : 120;
+    _this.wordDelay = app.config && app.config.messagespeed === 'fast' ? 10 : 40;
+    _this.lineDelay = app.config && app.config.messagespeed === 'fast' ? 10 : 120;
     _this.audio = game.add.audio(svc.current.speakervoice || 'genericdialogue');
     _this.audio.loop = true;
     _this.top = svc.current.speaker ||
@@ -102,7 +96,7 @@ function(portraitSvc, TextParser, dialogueConfig, menuSvc) {
     function _play() {
       portraitSvc.animatePortrait(svc.current);
       if (svc.current.speaker) {
-        _this.audio.play('', 0, gameConfig.soundfx, true);
+        _this.audio.play('', 0, app.config.soundfx, true);
       }
     }
 

@@ -21,12 +21,12 @@ function boot(cameraSvc){
       game.scale.forceLandscape = true;
       game.scale.pageAlignVertically = true;
       game.scale.onFullScreenChange.add(function() {
-        if (game.scale.isFullScreen && app.sm.puc && app.sm.puc.fullscreenButton) {
-          app.sm.puc.fullscreenButton.alpha = 0;
-          app.sm.puc.fullscreenButton.alive = 0;
-        } else if (!game.scale.isFullScreen && app.sm.puc && app.sm.puc.fullscreenButton) {
-          app.sm.puc.fullscreenButton.alpha = 1;
-          app.sm.puc.fullscreenButton.alive = 1;
+        if (game.scale.isFullScreen && app.stateManager.puc && app.stateManager.puc.fullscreenButton) {
+          app.stateManager.puc.fullscreenButton.alpha = 0;
+          app.stateManager.puc.fullscreenButton.alive = 0;
+        } else if (!game.scale.isFullScreen && app.stateManager.puc && app.stateManager.puc.fullscreenButton) {
+          app.stateManager.puc.fullscreenButton.alpha = 1;
+          app.stateManager.puc.fullscreenButton.alive = 1;
         }
       });
       game.scale.refresh();
@@ -53,16 +53,16 @@ function boot(cameraSvc){
   };
 
   boot.preload = function () {
-    stateAssetHandler.preload(stateConfig);
+    // stateAssetHandler.preload(stateConfig);
   };
 
   boot.create = function () {
     $('.hideOnStart').css('display', 'none');
 
     //dev start if state requested in url
-    if (getURLParameter('state') && stateConfigs[getURLParameter('state')]) {
+    if (app.configHelpers.getURLParameter('state')) {
       app.config.devStart = true;
-      app.config.devStartState = getURLParameter('state');
+      app.config.devStartState = app.configHelpers.getURLParameter('state');
     }
 
     if (app.config.devStart || app.config.camera_mode) {

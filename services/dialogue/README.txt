@@ -4,34 +4,34 @@
   Special tags:
     - 'p-' for portraits
     - 'n-' for name
-    - 'i-' to push item to app.sm.inv
-    - 'rm-' to remove item from app.sm.inv
+    - 'i-' to push item to app.stateManager.inv
+    - 'rm-' to remove item from app.stateManager.inv
     - 'a-' for portrait animations
     - 'music-' - crossfade to specified track
     - 'sound-' - play sound effect
     - 'event-' - fire event registered to state
     - 'next-' - for next dialogue element if no choices available
-    - 'set-' - set values in app.sm.invEval
-      - set: 'set-name=dee' // app.sm.invEval.name === 'dee'
-      - increment: 'set-value+=5' // app.sm.invEval.value += 5
-      - decrement: 'set-value-=5' // app.sm.invEval.value -= 5
+    - 'set-' - set values in app.stateManager.invEval
+      - set: 'set-name=dee' // app.stateManager.invEval.name === 'dee'
+      - increment: 'set-value+=5' // app.stateManager.invEval.value += 5
+      - decrement: 'set-value-=5' // app.stateManager.invEval.value -= 5
 
   Conditional shortcode:
     - highlight text
       - <<highlight-r>>red<</highlight>>
       - <<highlight-y>>yellow<</highlight>>
       - <<highlight-g>>green<</highlight>>
-    - show value of key in app.sm.inv
+    - show value of key in app.stateManager.inv
       - <<$key>>
-    - show dialogue segment if $item(s) exist(s) in app.sm.inv
+    - show dialogue segment if $item(s) exist(s) in app.stateManager.inv
       - <<if $inventoryObject>><</if>>
       - conditional `and` (e.g. if inventoryObject and inventoryObject2):
         - <<if $inventoryObject1&&inventoryObject2>><</if>>
       - conditional `or` (e.g. if inventoryObject or inventoryObject2)::
         - <<if $inventoryObject1||inventoryObject2>><</if>>
-    - hide dialogue segment if $item exists in app.sm.inv
+    - hide dialogue segment if $item exists in app.stateManager.inv
       - <<hideif $tester>>This vignette is under construction.<</hideif>>
-    - show dialogue segment if $item evaluates to a given value in app.sm.invEval
+    - show dialogue segment if $item evaluates to a given value in app.stateManager.invEval
         - <<if $inventoryObject=1>><</if>>
         - <<if $inventoryObject>1>><</if>>
         - <<if $inventoryObject<1>><</if>>

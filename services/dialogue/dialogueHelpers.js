@@ -1,9 +1,9 @@
 define(['services/portraitSvc',
         'services/cameraSvc',
-        'services/musicSvc'
+        'services/audioSvc'
         ],
 
-function (portraitSvc, cameraSvc, musicSvc){
+function (portraitSvc, cameraSvc, audioSvc){
 
     var svc = {};
 
@@ -82,9 +82,9 @@ function (portraitSvc, cameraSvc, musicSvc){
         var conditionalMatchRegex = /\$(.*?)>>/;
         var conditionalRegexMatch = conditionalMatchRegex.exec(matches[i][0])[1].trim();
         var regexString = '<<$' + conditionalRegexMatch + '>>';
-        if (app.sm.invEval[conditionalRegexMatch] !== null &&
-            app.sm.invEval[conditionalRegexMatch] !== undefined) {
-          text = text.replace(regexString, app.sm.invEval[conditionalRegexMatch]);
+        if (app.stateManager.invEval[conditionalRegexMatch] !== null &&
+            app.stateManager.invEval[conditionalRegexMatch] !== undefined) {
+          text = text.replace(regexString, app.stateManager.invEval[conditionalRegexMatch]);
         } else {
           text = text.replace(regexString, '');
         }
@@ -139,12 +139,12 @@ function (portraitSvc, cameraSvc, musicSvc){
             var negateCondition = _checkNegative(conditions[i]);
             if (negateCondition) {
               cond = conditions[i].split('!')[1];
-              if (app.sm.inv.indexOf(cond) !== -1) {
+              if (app.stateManager.inv.indexOf(cond) !== -1) {
                 _replace();
               }
             } else {
               cond = conditions[i];
-              if (app.sm.inv.indexOf(cond) === -1) {
+              if (app.stateManager.inv.indexOf(cond) === -1) {
                 _replace();
               }
             }
@@ -166,12 +166,12 @@ function (portraitSvc, cameraSvc, musicSvc){
             var cond;
             if (negateCondition) {
               cond = conditions[i].split('!')[1];
-              if (app.sm.inv.indexOf(cond) === -1) {
+              if (app.stateManager.inv.indexOf(cond) === -1) {
                 return;
               }
             } else {
               cond = conditions[i];
-              if (app.sm.inv.indexOf(cond) > -1) {
+              if (app.stateManager.inv.indexOf(cond) > -1) {
                 return;
               }
             }
@@ -188,7 +188,7 @@ function (portraitSvc, cameraSvc, musicSvc){
         var evalArray = conditionalRegexMatch.split(/[=><]/);
         var key = evalArray[0].trim();
         var value = isNaN(evalArray[1].trim()) ? evalArray[1].trim() : parseInt(evalArray[1].trim());
-        var keyExists = app.sm.invEval[key] !== null && app.sm.invEval[key] !== undefined;
+        var keyExists = app.stateManager.invEval[key] !== null && app.stateManager.invEval[key] !== undefined;
 
         if (!keyExists) {
           _replace();
@@ -196,15 +196,15 @@ function (portraitSvc, cameraSvc, musicSvc){
         }
         // replace if false, else keep
         if (conditionalRegexMatch.indexOf('=') > -1) {
-          if (app.sm.invEval[key] !== value) {
+          if (app.stateManager.invEval[key] !== value) {
             _replace();
           }
         } else if (conditionalRegexMatch.indexOf('>') > -1) {
-          if (!(app.sm.invEval[key]>value)) {
+          if (!(app.stateManager.invEval[key]>value)) {
             _replace();
           }
         } else if (conditionalRegexMatch.indexOf('<') > -1) {
-          if (!(app.sm.invEval[key]<value)) {
+          if (!(app.stateManager.invEval[key]<value)) {
             _replace();
           }
         }
@@ -232,7 +232,7 @@ function (portraitSvc, cameraSvc, musicSvc){
         var conditionalRegexMatch = conditionalMatchRegex.exec(matches[i][0])[1].trim();
         var regexString = '<<hideif \\$' + conditionalRegexMatch + '>>.*?<<\/hideif>>';
 
-        if (app.sm.inv.indexOf(conditionalRegexMatch) > -1) {
+        if (app.stateManager.inv.indexOf(conditionalRegexMatch) > -1) {
           var replace = new RegExp(regexString, "g");
           text = text.replace(replace,'');
         }
@@ -311,9 +311,6 @@ function (portraitSvc, cameraSvc, musicSvc){
           }
         }
       }
-      if (menuSvc.menuFrameActive) {
-        return 'placeholder';
-      }
       return false;
     };
 
@@ -347,9 +344,9 @@ function (portraitSvc, cameraSvc, musicSvc){
         for (var i = 0; i < tags.length; i ++) {
           if (tags[i].trim().startsWith('music-')) {
             var theme = tags[i].trim().split('music-')[1];
-            var track = musicSvc.themes[theme];
+            var track = audioSvc.themes[theme];
 
-            musicSvc.crossfadetrack(track);
+            audioSvc.crossfadetrack(track);
             return theme;
           }
         }
@@ -393,9 +390,9 @@ function (portraitSvc, cameraSvc, musicSvc){
         var stateVarKey = stateVarKeyVal.split('=')[0];
         var stateVarVal = stateVarKeyVal.split('=')[1];
         if (isNaN(stateVarVal)) {
-          app.sm.invEval[stateVarKey] = stateVarVal;
+          app.stateManager.invEval[stateVarKey] = stateVarVal;
         } else {
-          app.sm.invEval[stateVarKey] = Number(stateVarVal);
+          app.stateManager.invEval[stateVarKey] = Number(stateVarVal);
         }
 
       }
@@ -403,20 +400,20 @@ function (portraitSvc, cameraSvc, musicSvc){
       function _increment(stateVarKeyVal) {
         var stateVarKey = stateVarKeyVal.split('+=')[0];
         var stateVarVal = stateVarKeyVal.split('+=')[1];
-        if (!app.sm.invEval[stateVarKey]) {
-          app.sm.invEval[stateVarKey] = 0;
+        if (!app.stateManager.invEval[stateVarKey]) {
+          app.stateManager.invEval[stateVarKey] = 0;
         }
-        app.sm.invEval[stateVarKey] += Number(stateVarVal);
+        app.stateManager.invEval[stateVarKey] += Number(stateVarVal);
 
       }
 
       function _decrement(stateVarKeyVal) {
         var stateVarKey = stateVarKeyVal.split('-=')[0];
         var stateVarVal = stateVarKeyVal.split('-=')[1];
-        if (!app.sm.invEval[stateVarKey]) {
-          app.sm.invEval[stateVarKey] = 0;
+        if (!app.stateManager.invEval[stateVarKey]) {
+          app.stateManager.invEval[stateVarKey] = 0;
         }
-        app.sm.invEval[stateVarKey] -= Number(stateVarVal);
+        app.stateManager.invEval[stateVarKey] -= Number(stateVarVal);
 
       }
     };
@@ -427,7 +424,7 @@ function (portraitSvc, cameraSvc, musicSvc){
         var tags = element.tags.split(',');
         for (var i = 0; i < tags.length; i ++) {
           if (tags[i].trim().startsWith('rm-')) {
-            app.sm.removeFromInv(tags[i].trim().split('rm-')[1]);
+            app.stateManager.removeFromInv(tags[i].trim().split('rm-')[1]);
           }
         }
       }
@@ -441,7 +438,7 @@ function (portraitSvc, cameraSvc, musicSvc){
         for (var i = 0; i < tags.length; i ++) {
 
           if (tags[i].trim() === 'returntoprevioustrack') {
-            if (musicSvc.previousTrack || trackChange) {
+            if (audioSvc.previousTrack || trackChange) {
               return true;
             }
           }
@@ -471,8 +468,8 @@ function (portraitSvc, cameraSvc, musicSvc){
         }
       }
       function _closeFrame() {
-        if (app.sm.puc && app.sm.puc.fullscreenButton.alpha) {
-          app.sm.puc.fullscreenButton.alpha = 0;
+        if (app.stateManager.puc && app.stateManager.puc.fullscreenButton.alpha) {
+          app.stateManager.puc.fullscreenButton.alpha = 0;
         }
         game.sound.play('cameraclose', 0.1);
         app.dialogueBorder.play('closeframe');
@@ -481,7 +478,7 @@ function (portraitSvc, cameraSvc, musicSvc){
         });
       }
       function _changeState() {
-        app.dm.callback = null;
+        app.stateManager.currentDialogue.callback = null;
         app.dialogueSvc.closeDialogueWindow(function() {
           game.state.start('loadState', true, false, state);
         });
@@ -506,8 +503,8 @@ function (portraitSvc, cameraSvc, musicSvc){
         }
       }
       for (var i = 0; i < events.length; i ++) {
-        if (app.sm.events[app.sm.currentState] && app.sm.events[app.sm.currentState][events[i]]) {
-          app.sm.events[app.sm.currentState][events[i]]();
+        if (app.stateManager.events[app.stateManager.currentState] && app.stateManager.events[app.stateManager.currentState][events[i]]) {
+          app.stateManager.events[app.stateManager.currentState][events[i]]();
         }
       }
     };

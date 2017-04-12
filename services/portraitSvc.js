@@ -23,11 +23,11 @@ function(spriteClasses) {
   };
 
   function getY() {
-    return gameConfig.dialogue.openFrom === 'TOP' ? 20 : game.height - gameConfig.dialogue.height - 5;
+    return app.config.dialogue.openFrom === 'TOP' ? 20 : game.height - app.config.dialogue.height - 5;
   }
 
   function getX() {
-    return gameConfig.dialogue.openFrom === 'TOP' ? 10 : 3;
+    return app.config.dialogue.openFrom === 'TOP' ? 10 : 3;
   }
 
   svc.getY = getY;

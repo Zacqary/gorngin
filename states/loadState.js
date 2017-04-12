@@ -1,13 +1,13 @@
 define([
-], function(stateAssetHandler, stateConfigs, loadScreenSvc,
-                 dialogueSvc, worldMapSvc, menuSvc, musicSvc){
+  'services/stateAssetHandler'
+], function(stateAssetHandler){
 
   var state = {};
   var stateName;
 
   state.init = function(name) {
     stateName = name;
-    app.sm.currentState = stateName;
+    app.stateManager.currentState = stateName;
   };
 
   state.preload = function() {
@@ -18,5 +18,4 @@ define([
   };
 
   return state;
-
 });

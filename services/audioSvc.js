@@ -1,6 +1,6 @@
-define([], musicSvc);
+define([], audioSvc);
 
-function musicSvc(){
+function audioSvc(){
   var svc = {};
   var browserPlayer = $('#browser-player');
   var currentTrackType;
@@ -24,37 +24,17 @@ function musicSvc(){
   svc.currentTrack = null;
   svc.previousTrack = null;
 
+  /*
+  Theme example
+  -------------
+    'example': {
+      'name': 'example',
+      'type': 'browser',
+      'id'  : 'example'
+    },
+  */
+
   svc.themes = {
-    'menu': {
-      'name': 'opening',
-      'type': 'browser',
-      'id'  : 'mainmenu'
-    },
-    'highway': {
-      'name': 'livingroomting',
-      'type': 'browser',
-      'id'  : 'highway'
-    },
-    'bar': {
-      'name': 'norconoir',
-      'type': 'browser',
-      'id'  : 'bar'
-    },
-    'comebacktome': {
-      'name': 'comebacktome',
-      'type': 'browser',
-      'id'  : 'bike'
-    },
-    'conveniencestore': {
-      'name': 'cavejazz',
-      'type': 'browser',
-      'id'  : 'cavejazz'
-    },
-    'videostore': {
-      'name': 'norcotheme',
-      'type': 'browser',
-      'id'  : 'videostore'
-    }
   };
 
   function preloadTracks() {
@@ -87,7 +67,7 @@ function musicSvc(){
 
   svc.playTrack = function(track){
 
-    var vol = gameConfig.devStart ? gameConfig.music : volIndex[track.name];
+    var vol = app.config.devStart ? app.config.music : volIndex[track.name];
     if (  svc.currentTrack === track ) { return; }
     svc.previousTrack = svc.currentTrack;
     svc.currentTrack = track;
@@ -129,7 +109,7 @@ function musicSvc(){
 
   //@TODO: add phaser crossfade in conditional
   svc.crossfadetrack = function(track) {
-    var vol = gameConfig.devStart ? gameConfig.music : volIndex[track.name] || 1;
+    var vol = app.config.devStart ? app.config.music : volIndex[track.name] || 1;
     if (  svc.currentTrack === track ) { return; }
     if (currentTrackType === 'phaser') {
       music.fadeOut(5000);

@@ -159,34 +159,26 @@ function (spriteClasses){
     }
   };
 
-  svc.openFrameAndInitDialogue = function(state, initElement, cb) {
+  svc.fadeInAndInitDialogue = function(state, initElement, cb) {
     svc.fade('in');
-    game.sound.play('cameraopen', 0.1);
-    app.dialogueBorder.play('openframe');
-    app.dialogueBorder.animations.currentAnim.onComplete.add(function() {
-      if (app.config.enableFullscreen) {
-        console.log('game config ----> ', app.config);
-        svc.createFullscreenButton();
-      }
-      app.dialogueSvc.initializeDialogue(state, initElement, cb);
-    });
+    if (app.config.enableFullscreen) {
+      svc.createFullscreenButton();
+    }
+    app.dialogueSvc.initializeDialogue(state, initElement, cb);
   };
 
   svc.createFullscreenButton = function() {
-    if (!app.sm.puc) {
-      app.sm.puc = {};
-    }
-    app.sm.puc.fullscreenButton = game.add.sprite(game.width - 30, 5, 'fullscreen');
-    app.sm.puc.fullscreenButton.scale.setTo(0.9, 0.9);
-    app.sm.puc.fullscreenButton.fixedToCamera = true;
-    app.sm.puc.fullscreenButton.inputEnabled = true;
-    app.sm.puc.fullscreenButton.useHandCursor = false;
-    app.sm.puc.fullscreenButton.input.priorityID = 2;
+    app.stateManager.fullscreenButton = game.add.sprite(game.width - 30, 5, 'fullscreen');
+    app.stateManager.fullscreenButton.scale.setTo(0.9, 0.9);
+    app.stateManager.fullscreenButton.fixedToCamera = true;
+    app.stateManager.fullscreenButton.inputEnabled = true;
+    app.stateManager.fullscreenButton.useHandCursor = false;
+    app.stateManager.fullscreenButton.input.priorityID = 2;
     if (game.scale.isFullScreen) {
-      app.sm.puc.fullscreenButton.alpha = 0;
+      app.stateManager.fullscreenButton.alpha = 0;
     }
 
-    app.sm.puc.fullscreenButton.events.onInputDown.add(svc.toggleFullscreen);
+    app.stateManager.fullscreenButton.events.onInputDown.add(svc.toggleFullscreen);
   };
 
   svc.toggleFullscreen = function(){
@@ -308,8 +300,8 @@ function (spriteClasses){
       app.dialogueBorder,
       app.dialogueGroup,
       app.dialogueTextGroup,
-      app.dm.followupIcon,
-      app.sm.puc.fullscreenButton,
+      app.stateManager.currentDialogue.followupIcon,
+      app.stateManager.puc.fullscreenButton,
       app.fadeSprite,
       app.loadGroup
     ];

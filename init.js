@@ -1,12 +1,8 @@
-require(['states/boot',
-         'states/loadState',
-         'states/test'
+require([
+'states/boot/boot','states/example/example','states/loadState'
 ], function(
-  boot,
-  loadState,
-  test
+boot,example,loadState
 ) {
-  for (var i = 0; i < arguments.length; i ++) {
-    console.log(arguments[i]);
-  }
+game.state.add('boot', boot);game.state.add('loadState', loadState);
+game.state.add('example', example);game.state.start('boot');
 });
