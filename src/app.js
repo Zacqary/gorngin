@@ -1,4 +1,5 @@
 var app = {};
+var music;
 app.dialogueManager = {};
 
 /*

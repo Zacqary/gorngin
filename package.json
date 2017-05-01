@@ -18,10 +18,16 @@
     "grunt-contrib-uglify": "^2.2.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-execute": "^0.2.2",
+    "grunt-karma": "^2.0.0",
     "grunt-nw-builder": "latest",
-    "grunt-shell": "^2.1.0",
     "grunt-string-replace": "^1.2.1",
-    "grunt-stripcomments": "^0.6.0"
+    "grunt-stripcomments": "^0.6.0",
+    "jasmine-core": "^2.6.1",
+    "karma": "^1.6.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-requirejs": "^1.1.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

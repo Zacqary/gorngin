@@ -1,0 +1,1 @@
+define([], function (){ var dialogue = {"example":[{"title":"init","tags":"","body":"This is a dialogue sample. Check the dialogue directory for documentation.","position":{"x":-416,"y":-254},"colorID":0}],"template":[{"title":"init","tags":"","body":"I'm empty","position":{"x":-416,"y":-254},"colorID":0}]}; return dialogue; });

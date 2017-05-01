@@ -1,17 +1,24 @@
-define([], audioSvc);
+define(['jquery'], audioSvc);
 
-function audioSvc(){
+function audioSvc($){
   var svc = {};
+  var detectBrowser =  $('browser-player');
+  if (!detectBrowser.length) {
+    $('body').append('<audio id="browser-player"></audio>');
+  }
   var browserPlayer = $('#browser-player');
+
   var currentTrackType;
 
-  browserPlayer[0].ontimeupdate = function(){
-    var buffer = 0.44;
-    if(this.currentTime > this.duration - buffer){
-      this.currentTime = 0;
-      this.play();
-    }
-  };
+  if (browserPlayer[0]) {
+    browserPlayer[0].ontimeupdate = function(){
+      var buffer = 0.44;
+      if(this.currentTime > this.duration - buffer){
+        this.currentTime = 0;
+        this.play();
+      }
+    };
+  }
 
   game.onPause.add(function(){
     browserPlayer[0].pause();
@@ -24,20 +31,10 @@ function audioSvc(){
   svc.currentTrack = null;
   svc.previousTrack = null;
 
-  /*
-  Theme example
-  -------------
-    'example': {
-      'name': 'example',
-      'type': 'browser',
-      'id'  : 'example'
-    },
-  */
-
   svc.themes = {
   };
 
-  function preloadTracks() {
+  svc.preloadTracks = function() {
     for (var track in svc.themes) {
        if (svc.themes.hasOwnProperty(track)) {
          if (svc.themes[track].type === 'browser') {
@@ -50,34 +47,24 @@ function audioSvc(){
         }
       }
     }
-  }
-
-  preloadTracks();
+  };
 
   var volIndex = {
-    'comebacktome': 0.7,
-    'norconoir'   : 1,
-    'overworld'   : 0.15,
-    'pleasantnightshit' : 0.5,
-    'deadofthebrainstaffroll': 0.2,
-    'serenitybells': 0.15,
-    'opening': 0.8,
-    'modarchive_a_new_frontend': 1
   };
 
   svc.playTrack = function(track){
-
-    var vol = app.config.devStart ? app.config.music : volIndex[track.name];
+    var vol = gameConfig.devStart ? gameConfig.music : volIndex[track.name];
+    console.log('PLAY TRACK', track);
     if (  svc.currentTrack === track ) { return; }
     svc.previousTrack = svc.currentTrack;
     svc.currentTrack = track;
     if (music) { music.destroy(); }
-    if (track.type === 'browser') {
+    if (track && track.type === 'browser') {
       currentTrackType = 'browser';
-      browserPlayer.animate({volume: vol}, 1); //= volIndex[track.name];
       var src= 'assets/audio/' + track.name;
       if (browserPlayer[0].canPlayType('audio/ogg')) {
         src = src + '.ogg';
+        console.log('PLAY OGG', src);
         browserPlayer.attr('src', src)[0];
       } else {
         src = src + '.mp3';
@@ -85,6 +72,7 @@ function audioSvc(){
       }
       browserPlayer[0].loop = true;
       browserPlayer[0].play();
+      browserPlayer.animate({volume: vol}, 1);
     } else {
       currentTrackType = 'phaser';
       browserPlayer[0].pause();
@@ -108,18 +96,19 @@ function audioSvc(){
   };
 
   //@TODO: add phaser crossfade in conditional
-  svc.crossfadetrack = function(track) {
-    var vol = app.config.devStart ? app.config.music : volIndex[track.name] || 1;
+  svc.crossfadetrack = function(origTrack, origFade) {
+    var track = (typeof origTrack === 'string' || origTrack instanceof String) ? svc.themes[origTrack] : origTrack;
+    var fade = origFade ? origFade : 2500;
+    var vol = gameConfig.devStart ? gameConfig.music : volIndex[track.name] || 1;
     if (  svc.currentTrack === track ) { return; }
     if (currentTrackType === 'phaser') {
       music.fadeOut(5000);
     } else {
-      var musicFade = browserPlayer.animate({volume: 0}, 2500, null, _playNext);
+      var musicFade = browserPlayer.animate({volume: 0}, fade, null, _playNext);
     }
 
     function _playNext() {
       svc.playTrack(track);
-      browserPlayer.animate({volume: vol}, 1);
     }
   };
 

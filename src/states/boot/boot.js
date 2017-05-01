@@ -1,6 +1,6 @@
-define(['services/cameraSvc'], boot);
+define(['services/cameraSvc', 'services/audioSvc'], boot);
 
-function boot(cameraSvc){
+function boot(cameraSvc, audioSvc){
 
   var boot  = {};
 
@@ -8,6 +8,7 @@ function boot(cameraSvc){
 
   boot.init = function () {
     var canvasWidth, canvasHeight;
+    audioSvc.preloadTracks();
     if (typeof process !== "undefined" && process.versions['node-webkit']) {
         app.webkit = true;
     }

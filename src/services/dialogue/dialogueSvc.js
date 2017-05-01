@@ -1,4 +1,6 @@
-define(['services/portraitSvc',
+define(['services/combatsystem/combatDialogueSvc',
+        'services/combatsystem/config',
+        'services/portraitSvc',
         'services/spriteClasses',
         'services/cameraSvc',
         'services/audioSvc',
@@ -6,12 +8,13 @@ define(['services/portraitSvc',
         'services/dialogue/config',
         'services/dialogue/dialogueHelpers',
         'services/dialogue/WordWrapper',
-        'services/dialogue/completeDialogueSet'
+        'services/dialogue/completeDialogueSet',
+        'jquery'
         ],
 
-function (portraitSvc, spriteClasses, cameraSvc,
+function (combatDialogueSvc, combatConfig, portraitSvc, spriteClasses, cameraSvc,
                      audioSvc, keyboardSvc, dialogueConfig, dialogueHelpers,
-                     WordWrapper, completeDialogueSet){
+                     WordWrapper, completeDialogueSet, jQuery){
   var svc = {};
   svc.current = {};
   app.dialogueGroup = game.add.group();
@@ -595,7 +598,10 @@ function (portraitSvc, spriteClasses, cameraSvc,
        oReq.open("get", './assets/yarn/' + dialogue + '.json', true);
        oReq.send();
     } else {
-      svc.handleDialogue(dialogue, initElement, cb);
+      var dialogueData = {
+        'elements': (dialogue.elements || dialogue)
+      };
+      svc.handleDialogue(dialogueData, initElement, cb);
     }
 
     function _req(e) {

@@ -9,18 +9,18 @@ grunt.initConfig({
     compile: {
       options: {
         baseUrl: ".",
-        name: "init",
+        name: "src/init",
         optimize: "uglify",
         out: "build/init-build.js",
-        mainConfigFile: 'main.js'      }
+        mainConfigFile: 'src/main.js'      }
     },
     dev: {
       options: {
         baseUrl: ".",
-        name: "init",
+        name: "src/init",
         optimize: "none",
         out: "build/init-build.js",
-        mainConfigFile: 'main.js'      }
+        mainConfigFile: 'src/main.js'      }
     }
   },
   clean: {
@@ -59,10 +59,17 @@ grunt.initConfig({
     dist: {
       src: ['node_modules/phaser/build/phaser.min.js',
             'node_modules/jquery/dist/jquery.min.js',
-            'app.js',
-            'main.js'],
+            'src/app.js',
+            'src/main.js'],
       dest: 'build/deps.js',
     },
+  },
+  karma: {
+    unit: {
+      options: {
+        configFile: './karma.conf.js'
+      }
+    }
   },
   execute: {
       target: {
@@ -77,7 +84,7 @@ grunt.initConfig({
       options: {
         replacements: [
           {
-            pattern: '<script data-main="init" src="require.js"></script>',
+            pattern: '<script data-main="src/init" src="src/require.js"></script>',
             replacement: '<script data-main="init-build" src="require.js"></script>'
           },
           {
@@ -89,15 +96,15 @@ grunt.initConfig({
             replacement: ''
           },
           {
-            pattern: '<script src="app.js"></script>',
+            pattern: '<script src="src/app.js"></script>',
             replacement: ''
           },
           {
-            pattern: '<script src="services/app.config.js"></script>',
+            pattern: '<script src="src/services/app.config.js"></script>',
             replacement: ''
           },
           {
-            pattern: '<script type="text/javascript" src="main.js"></script>',
+            pattern: '<script type="text/javascript" src="src/main.js"></script>',
             replacement: ''
           }
         ]
@@ -141,8 +148,9 @@ grunt.loadNpmTasks('grunt-contrib-watch');
 grunt.loadNpmTasks('grunt-contrib-clean');
 grunt.loadNpmTasks('grunt-execute');
 grunt.loadNpmTasks('grunt-shell');
+grunt.loadNpmTasks('grunt-karma');
 
-
+grunt.registerTask('test', [ 'karma']);
 grunt.registerTask('default', ['execute','requirejs', 'copy', 'concat', 'uglify', 'string-replace']);
 grunt.registerTask('dev', ['requirejs:dev', 'copy', 'concat', 'string-replace', 'watch']);
 grunt.registerTask('webkit', ['execute', 'requirejs', 'copy', 'clean:music', 'concat', 'string-replace', 'clean:webkit', 'nwjs']);

@@ -6,8 +6,8 @@ if [ -d "./states/$1" ]; then
 fi
 
 cp ./assets/yarn/template.json ./assets/yarn/$1.json
-cp -r ./states/template ./states/$1
-mv ./states/$1/template.js ./states/$1/$1.js
+cp -r ./src/states/template ./src/states/$1
+mv ./src/states/$1/template.js ./src/states/$1/$1.js
 
 find ./states/$1 -type f -print0 | xargs -0 sed -i '' "s/{{name}}/$1/g"
 sed -i '' $"s/'states\/boot\/boot',/'states\/boot\/boot','states\/$1\/$1',/g" "./init.js"

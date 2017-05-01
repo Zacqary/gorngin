@@ -26,7 +26,7 @@ function _read(name, i) {
 function _write() {
   var module = 'define([], function (){ var dialogue = ' +
                JSON.stringify(dialogueSet) + '; return dialogue; });';
-  fs.writeFile('services/dialogue/completeDialogueSet.js', module, _fin);
+  fs.writeFile('src/services/dialogue/completeDialogueSet.js', module, _fin);
   function _fin(err) {
       if(err) {
           return console.log(err);
