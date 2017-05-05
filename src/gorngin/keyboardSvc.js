@@ -9,8 +9,8 @@
 */
 
 define([
-        'services/cameraSvc',
-        'services/dialogue/dialogueHelpers'
+        'gorngin/cameraSvc',
+        'gorngin/dialogue/dialogueHelpers'
       ],
 function(cameraSvc, dialogueHelpers) {
    var svc = {};

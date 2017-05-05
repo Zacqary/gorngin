@@ -1,12 +1,12 @@
 define([
-    'services/dialogue/config',
-    'services/combatsystem/combatVisualSvc',
-    'services/combatsystem/config',
-    'services/combatsystem/enemySvc',
-    'services/combatsystem/partySvc',
-    'services/combatsystem/weaponSvc',
-    'services/combatsystem/turnSvc',
-    'services/spriteClasses'
+    'gorngin/dialogue/config',
+    'gorngin/combatsystem/combatVisualSvc',
+    'gorngin/combatsystem/config',
+    'gorngin/combatsystem/enemySvc',
+    'gorngin/combatsystem/partySvc',
+    'gorngin/combatsystem/weaponSvc',
+    'gorngin/combatsystem/turnSvc',
+    'gorngin/spriteClasses'
 ],
 function (dialogueConfig, combatVisualSvc, combatConfig, enemySvc,
          partySvc, weaponSvc, turnSvc, spriteClasses){

@@ -1,8 +1,8 @@
 define([
-    'services/dialogue/config',
-    'services/combatsystem/config',
-    'services/combatsystem/partySvc',
-    'services/spriteClasses'
+    'gorngin/dialogue/config',
+    'gorngin/combatsystem/config',
+    'gorngin/combatsystem/partySvc',
+    'gorngin/spriteClasses'
 ],
 function (dialogueConfig, combatConfig, partySvc, spriteClasses){
 

@@ -1,8 +1,8 @@
 define([
-  'services/cameraSvc',
-  'services/dialogue/dialogueSvc',
-  'services/audioSvc',
-  'services/spriteClasses'
+  'gorngin/cameraSvc',
+  'gorngin/dialogue/dialogueSvc',
+  'gorngin/audioSvc',
+  'gorngin/spriteClasses'
 ],
 function (cameraSvc, dialogueSvc, audioSvc, spriteClasses) {
   var svc = {};

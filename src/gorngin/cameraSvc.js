@@ -1,5 +1,5 @@
 define([
-  'services/spriteClasses'
+  'gorngin/spriteClasses'
 ],
 
 function (spriteClasses){

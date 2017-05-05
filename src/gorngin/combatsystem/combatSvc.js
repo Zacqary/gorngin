@@ -1,11 +1,11 @@
-define(['services/dialogue/config',
-        'services/spriteClasses',
-        'services/combatsystem/combatDialogueSvc',
-        'services/combatsystem/turnSvc',
-        'services/combatsystem/combatVisualSvc',
-        'services/combatsystem/partySvc',
-        'services/combatsystem/config',
-        'services/audioSvc'
+define(['gorngin/dialogue/config',
+        'gorngin/spriteClasses',
+        'gorngin/combatsystem/combatDialogueSvc',
+        'gorngin/combatsystem/turnSvc',
+        'gorngin/combatsystem/combatVisualSvc',
+        'gorngin/combatsystem/partySvc',
+        'gorngin/combatsystem/config',
+        'gorngin/audioSvc'
        ],
 function(dialogueConfig, spriteClasses, combatDialogueSvc, turnSvc,
          combatVisualSvc, partySvc, combatConfig, audioSvc){

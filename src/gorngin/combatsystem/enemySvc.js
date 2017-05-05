@@ -1,5 +1,5 @@
-define(['services/dialogue/config',
-        'services/spriteClasses'
+define(['gorngin/dialogue/config',
+        'gorngin/spriteClasses'
        ],
 function(dialogueConfig, spriteClasses){
   var svc = {};

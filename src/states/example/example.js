@@ -1,7 +1,7 @@
 define([
-    'services/dialogue/dialogueSvc',
-    'services/stateAssetHandler',
-    'services/cameraSvc',
+    'gorngin/dialogue/dialogueSvc',
+    'gorngin/stateAssetHandler',
+    'gorngin/cameraSvc',
     'states/example/onscreen',
     'states/example/config'
 ],

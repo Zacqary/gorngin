@@ -1,5 +1,5 @@
 define([
-  'services/stateAssetHandler'
+  'gorngin/stateAssetHandler'
 ], function(stateAssetHandler){
 
   var state = {};

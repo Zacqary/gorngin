@@ -134,7 +134,7 @@ app.stateManager.loadGame = function(slot) {
   }
 };
 
-//Player update control (populated by services/playerCtrl.js)
+//Player update control (populated by gorngin/playerCtrl.js)
 app.stateManager.puc = {};
 
 app.stateManager.obtained = function(item) {

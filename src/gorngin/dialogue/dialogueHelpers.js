@@ -1,6 +1,6 @@
-define(['services/portraitSvc',
-        'services/cameraSvc',
-        'services/audioSvc'
+define(['gorngin/portraitSvc',
+        'gorngin/cameraSvc',
+        'gorngin/audioSvc'
         ],
 
 function (portraitSvc, cameraSvc, audioSvc){

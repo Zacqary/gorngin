@@ -1,6 +1,6 @@
-define(['services/portraitSvc',
-        'services/dialogue/TextParser',
-        'services/dialogue/config'
+define(['gorngin/portraitSvc',
+        'gorngin/dialogue/TextParser',
+        'gorngin/dialogue/config'
         ],
 
 function(portraitSvc, TextParser, dialogueConfig) {

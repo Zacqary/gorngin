@@ -2,7 +2,7 @@ var require = {
   baseUrl: ".",
   paths: {
     states     : 'src/states',
-    services   : 'src/services',
+    gorngin   : 'src/gorngin',
     jquery     : 'node_modules/jquery/dist/jquery.min'
 
   },

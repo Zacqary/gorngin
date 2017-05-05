@@ -1,4 +1,4 @@
-define(['services/cameraSvc', 'services/audioSvc'], boot);
+define(['gorngin/cameraSvc', 'gorngin/audioSvc'], boot);
 
 function boot(cameraSvc, audioSvc){
 

@@ -1,4 +1,4 @@
-define(['services/assetDir', 'services/audioSvc'], statePreloader);
+define(['gorngin/assetDir', 'gorngin/audioSvc'], statePreloader);
 
 function statePreloader(assetDir, audioSvc){
 

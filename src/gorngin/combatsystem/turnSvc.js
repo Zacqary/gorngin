@@ -1,7 +1,7 @@
 define([
-  'services/combatsystem/config',
-  'services/combatsystem/enemySvc',
-  'services/combatsystem/partySvc'
+  'gorngin/combatsystem/config',
+  'gorngin/combatsystem/enemySvc',
+  'gorngin/combatsystem/partySvc'
 ],
 function(config, enemySvc, partySvc){
   var svc = {};

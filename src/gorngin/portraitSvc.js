@@ -1,4 +1,4 @@
-define(['services/spriteClasses'],
+define(['gorngin/spriteClasses'],
 function(spriteClasses) {
   var svc = {};
 

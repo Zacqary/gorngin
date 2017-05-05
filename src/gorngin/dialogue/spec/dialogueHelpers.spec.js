@@ -1,6 +1,6 @@
 define([
-  'services/dialogue/dialogueHelpers',
-  'services/dialogue/dialogueSvc'
+  'gorngin/dialogue/dialogueHelpers',
+  'gorngin/dialogue/dialogueSvc'
 ], function(dialogueHelpers, dialogueSvc) {
   describe('dialogueHelpers', function() {
 
