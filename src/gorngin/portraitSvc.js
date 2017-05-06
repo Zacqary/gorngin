@@ -33,5 +33,13 @@ function(spriteClasses) {
   svc.getY = getY;
   svc.getX = getX;
 
+  svc.setPortraits = function(portraits) {
+    for (var property in portraits) {
+      if (portraits.hasOwnProperty(property)) {
+        svc[property] = portraits[property];
+      }
+    }
+  };
+
   return svc;
 });

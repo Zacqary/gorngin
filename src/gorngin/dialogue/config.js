@@ -73,6 +73,7 @@ function() {
     getTextWidth: function(hasPortrait) {
       return hasPortrait ? 500 : 630;
     },
+    setConfig: svc.setConfig,
     styles: _styles,
     sounds: _sounds,
     keywords: ['ask', 'buy', 'cancel', 'look', 'move', 'talk', 'speak', 'use', 'purchase', 'leave', 'open', 'destination'] // these keywords will remain highlighted
