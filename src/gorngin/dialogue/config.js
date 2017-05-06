@@ -60,6 +60,10 @@ function() {
     }
   };
 
+  svc.setConfig = function(config) {
+    svc.config = config;
+  };
+
   svc.config = {
     height: app.config.dialogue.height,
     background: false,

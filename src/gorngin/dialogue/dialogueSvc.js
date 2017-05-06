@@ -30,6 +30,11 @@ function (combatDialogueSvc, combatConfig, portraitSvc, spriteClasses, cameraSvc
   svc.set = function(attribute, value) {
     svc[attribute] = value;
   };
+  console.log('GORINGN DIALOGUE SVC');
+
+  svc.setConfig = function(config) {
+    dialogueConfig.setConfig(config);
+  };
 
   svc.borderAnimationSignal = new Phaser.Signal();
 
