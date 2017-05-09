@@ -53,7 +53,7 @@ function audioSvc($){
   };
 
   svc.playTrack = function(track){
-    var vol = gameConfig.devStart ? gameConfig.music : volIndex[track.name];
+    var vol = app.config.devStart ? app.config.music : volIndex[track.name];
     console.log('PLAY TRACK', track);
     if (  svc.currentTrack === track ) { return; }
     svc.previousTrack = svc.currentTrack;
@@ -99,7 +99,7 @@ function audioSvc($){
   svc.crossfadetrack = function(origTrack, origFade) {
     var track = (typeof origTrack === 'string' || origTrack instanceof String) ? svc.themes[origTrack] : origTrack;
     var fade = origFade ? origFade : 2500;
-    var vol = gameConfig.devStart ? gameConfig.music : volIndex[track.name] || 1;
+    var vol = app.config.devStart ? app.config.music : volIndex[track.name] || 1;
     if (  svc.currentTrack === track ) { return; }
     if (currentTrackType === 'phaser') {
       music.fadeOut(5000);
