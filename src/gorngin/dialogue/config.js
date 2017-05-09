@@ -61,6 +61,7 @@ function() {
   };
 
   svc.setConfig = function(config) {
+    dialogueConfig = jQuery.extend(config, svc.config);
     svc.config = config;
   };
 
@@ -72,6 +73,9 @@ function() {
     openFrom: app.config.dialogue.openFrom,
     getTextWidth: function(hasPortrait) {
       return hasPortrait ? 500 : 630;
+    },
+    getConfig: function() {
+      return svc.config;
     },
     setConfig: svc.setConfig,
     styles: _styles,

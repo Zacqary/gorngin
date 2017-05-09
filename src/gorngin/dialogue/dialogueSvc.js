@@ -27,12 +27,21 @@ function (combatDialogueSvc, combatConfig, portraitSvc, spriteClasses, cameraSvc
     portrait: ''
   };
 
+  svc.getConfigLoadedSvc = function(service) {
+    if (dialogueConfig.getSvc && dialogueConfig.getSvc(service)) {
+      return dialogueConfig.getSvc(service);
+    }
+  };
+
   svc.set = function(attribute, value) {
     svc[attribute] = value;
   };
 
   svc.setConfig = function(config) {
     dialogueConfig.setConfig(config);
+    dialogueConfig = jQuery.extend(config, dialogueConfig);
+    dialogueConfig = config;
+    console.log('DIALOGUE CONFIG', dialogueConfig);
   };
 
   svc.borderAnimationSignal = new Phaser.Signal();
@@ -196,6 +205,9 @@ function (combatDialogueSvc, combatConfig, portraitSvc, spriteClasses, cameraSvc
     }
     var newPortrait;
     app.dialoguePortraitGroup = game.add.group();
+    if (svc.getConfigLoadedSvc('menuSvc') && app.menuTextGroup) {
+      svc.getConfigLoadedSvc('menuSvc').killMenu();
+    }
     newPortrait = portraitSvc.get(svc.current.portrait);
     app.dialoguePortraitGroup.add(newPortrait);
     if (newPortrait !== app.dialogueProfileImage) {
@@ -207,6 +219,11 @@ function (combatDialogueSvc, combatConfig, portraitSvc, spriteClasses, cameraSvc
       portraitSvc.animatePortrait(svc.current);
     }
     svc.playOpenPortraitFrameAnim();
+    if (svc.getConfigLoadedSvc('menuSvc') && svc.current.portrait === 'placeholder') {
+      svc.getConfigLoadedSvc('menuSvc').addMenuText();
+      svc.getConfigLoadedSvc('menuSvc').set('menuEnabled', true);
+      svc.getConfigLoadedSvc('menuSvc').set('menuFrameActive', true);
+    }
   };
 
   svc.borderAnimationSignal.add(function(borderstate, reopen) {
@@ -406,7 +423,9 @@ function (combatDialogueSvc, combatConfig, portraitSvc, spriteClasses, cameraSvc
     }
     //game.sound.play(svc.sounds.click.sound, svc.sounds.click.vol, false);
     svc.destroyDialogueGroup();
-    if (choice.followup === 'end') {
+    if (svc.getConfigLoadedSvc('menuSvc') && choice.followup === 'endtomap') {
+      svc.closeDialogueWindow(svc.getConfigLoadedSvc('menuSvc').initMap);
+    } else if (choice.followup === 'end') {
       svc.closeDialogueWindow();
     } else {
       svc.advanceDialogueState(choice.followup);
@@ -630,7 +649,14 @@ function (combatDialogueSvc, combatConfig, portraitSvc, spriteClasses, cameraSvc
     }
 
     // store dialogue to return to after leaving menu
-    if (app.previousDialogue !== textJsonOrig && app.menuActivated === 0) {
+    if (app.previousDialogue !== textJsonOrig &&
+        app.menuActivated === 0 && !svc.getConfigLoadedSvc('menuSvc')) {
+      app.previousDialogue = textJsonOrig;
+      app.previousDialogueCallback = cb;
+    } else if (svc.getConfigLoadedSvc('menuSvc') &&
+        app.previousDialogue !== textJsonOrig &&
+        app.menuActivated === 0 && !svc.getConfigLoadedSvc('menuSvc').menuEnabled &&
+        !combatConfig.active) {
       app.previousDialogue = textJsonOrig;
       app.previousDialogueCallback = cb;
     }
@@ -799,6 +825,10 @@ function (combatDialogueSvc, combatConfig, portraitSvc, spriteClasses, cameraSvc
     }
 
     function _kill() {
+      if (svc.getConfigLoadedSvc('menuSvc')) {
+        svc.getConfigLoadedSvc('menuSvc').killMenu();
+        svc.getConfigLoadedSvc('menuSvc').resetMenuData();
+      }
       app.dialoguePortraitGroup.callAll('kill');
       app.dialoguePortraitGroup.callAll('destroy');
       app.dialogueProfileImage.kill();

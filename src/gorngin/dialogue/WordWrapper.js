@@ -23,8 +23,8 @@ function(portraitSvc, TextParser, dialogueConfig) {
   };
 
   svc.getStyle = function(name) {
-    var style = dialogueConfig.styles[name];
-    style.wordWrapWidth = dialogueConfig.getTextWidth(svc.current.portrait);
+    var style = dialogueConfig.getConfig().styles[name];
+    style.wordWrapWidth = dialogueConfig.getConfig().getTextWidth(svc.current.portrait);
     return style;
   };
 
@@ -55,12 +55,12 @@ function(portraitSvc, TextParser, dialogueConfig) {
     _this.audio.loop = true;
     _this.top = svc.current.speaker ||
                 (app.dialogueProfileImage && app.dialogueProfileImage.alive && profileImageHasName) ?
-                dialogueConfig.borderTop + 27 : dialogueConfig.borderTop + 10;
+                dialogueConfig.getConfig().borderTop + 27 : dialogueConfig.getConfig().borderTop + 10;
 
     _this.create = function() {
       if (!svc.current.animateDialogue) {
         portraitSvc.animatePortrait(svc.current);
-        _this.text = game.add.text(dialogueConfig.borderLeft, _this.top, _this.content,
+        _this.text = game.add.text(dialogueConfig.getConfig().borderLeft, _this.top, _this.content,
                                    svc.getStyle('speech'));
         app.dialogueTextGroup.add(_this.text);
         _highlightText();
@@ -73,7 +73,7 @@ function(portraitSvc, TextParser, dialogueConfig) {
       }
       app.dialogueSvc.createInputBlocker();
       _this.audio.onDecoded.add(_play, this);
-      _this.text = game.add.text(dialogueConfig.borderLeft, _this.top, '',
+      _this.text = game.add.text(dialogueConfig.getConfig().borderLeft, _this.top, '',
                                  svc.getStyle('speech'));
       _highlightText();
       app.dialogueTextGroup.add(_this.text);
