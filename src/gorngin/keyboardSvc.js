@@ -9,10 +9,12 @@
 */
 
 define([
-        'gorngin/cameraSvc',
-        'gorngin/dialogue/dialogueHelpers'
+        'services/menu/menuSvc',
+        'services/cameraSvc',
+        'services/worldMap/worldMapSvc',
+        'services/dialogue/dialogueHelpers'
       ],
-function(cameraSvc, dialogueHelpers) {
+function(menuSvc, cameraSvc, worldMapSvc, dialogueHelpers) {
    var svc = {};
    svc.numberKeys = ['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX',
                       'SEVEN', 'EIGHT', 'NINE'];
@@ -56,19 +58,65 @@ function(cameraSvc, dialogueHelpers) {
 
    svc.actions = {
      selectUp: function() {
-       app.dialogueSvc.decrementChoice();
-       app.dialogueSvc.highlightChoice(app.dialogueSelections[
-         app.dialogueSvc.current.choiceIndex
-       ]);
+       if (app.currentState === 'mainmenu') {
+         _tempHackyMenuSelector();
+       } else if (worldMapSvc.mapEnabled && app.mapSelections &&
+           worldMapSvc.mapOutOfFocus === true) {
+         worldMapSvc.set('mapOutOfFocus', false);
+         app.dialogueBorder.animations.play('selectMap');
+       } else if (worldMapSvc.mapOutOfFocus === false) {
+         app.dialogueBorder.animations.play('selectMap');
+       } else if (menuSvc.menuFocused && app.menuSelections.length > 0) {
+         if (menuSvc.itemSelected) {
+           menuSvc.selectMenuItem(app.menuSelections[menuSvc.menuSelection]);
+         } else {
+           menuSvc.decrementMenuSelection();
+           menuSvc.hoverOverMenuItem(app.menuSelections[menuSvc.menuSelection]);
+         }
+       } else {
+         app.dialogueSvc.decrementChoice();
+         app.dialogueSvc.highlightChoice(app.dialogueSelections[
+           app.dialogueSvc.current.choiceIndex
+         ]);
+       }
      },
      selectDown: function() {
-       app.dialogueSvc.incrementChoice();
-       app.dialogueSvc.highlightChoice(app.dialogueSelections[
-         app.dialogueSvc.current.choiceIndex
-       ]);
+       if (app.currentState === 'mainmenu') {
+         _tempHackyMenuSelector();
+       } else if (worldMapSvc.mapEnabledAndFocused()) {
+         if (app.menuSelections.length === 0) {
+           worldMapSvc.killMap();
+         }
+         app.dialogueBorder.animations.play('selectMenu');
+         worldMapSvc.defaultMapPins(
+           app.mapSelections[worldMapSvc.pinIndex].pin
+         );
+       } else if (worldMapSvc.mapEnabledAndOutOfFocus() ||
+                  worldMapSvc.pinIndex === -1 && worldMapSvc.mapEnabled) {
+         if (worldMapSvc.pinIndex === -1 && worldMapSvc.mapEnabled) {
+           app.dialogueBorder.animations.play('selectMenu');
+         }
+         if (app.menuSelections.length > 0) {
+           menuSvc.selectMenuItem(app.menuSelections[menuSvc.menuSelection]);
+         }
+       } else if (menuSvc.menuFocused && app.menuSelections) {
+         if (menuSvc.itemSelected) {
+           menuSvc.selectMenuItem(app.menuSelections[menuSvc.menuSelection]);
+         } else {
+           menuSvc.incrementMenuSelection();
+           menuSvc.hoverOverMenuItem(app.menuSelections[menuSvc.menuSelection]);
+         }
+       } else {
+         app.dialogueSvc.incrementChoice();
+         app.dialogueSvc.highlightChoice(app.dialogueSelections[
+           app.dialogueSvc.current.choiceIndex
+         ]);
+       }
      },
      selectLeft: function() {
        var backbutton = dialogueHelpers.getDialogueGroupChildByKey('backbutton');
+
+       console.log('SELECT LEFT');
 
        if (app.dialogueSvc.lockDialogue) {
          return;
@@ -78,17 +126,95 @@ function(cameraSvc, dialogueHelpers) {
          backbutton.click(backbutton);
          return;
        }
+
+       if (worldMapSvc.mapEnabled && app.mapSelections) {
+         worldMapSvc.incrementPin();
+         app.mapSelections[worldMapSvc.pinIndex].onInputOver(
+           app.mapSelections[worldMapSvc.pinIndex].pin
+         );
+       } else if (menuSvc.menuEnabled && !menuSvc.menuFocused &&
+                  app.menuSelections.length > 0) {
+         app.dialogueBorder.animations.play('selectmenu');
+         menuSvc.focusFrameComponent('menu');
+         menuSvc.set('menuFocused', true);
+         if (!menuSvc.itemSelected) {
+           menuSvc.set('menuSelection', 0);
+           menuSvc.hoverOverMenuItem(app.menuSelections[menuSvc.menuSelection]);
+         }
+         app.dialogueSvc.unhighlightChoices();
+       } else {
+         return;
+         //svc.actions.selectUp();
+       }
      },
      selectRight: function() {
+       if (worldMapSvc.mapEnabledAndFocused() ||
+           worldMapSvc.pinIndex === -1 && worldMapSvc.mapEnabled) {
+         worldMapSvc.decrementPin();
+         app.mapSelections[worldMapSvc.pinIndex].onInputOver(
+           app.mapSelections[worldMapSvc.pinIndex].pin
+         );
+       } else if (menuSvc.menuEnabled && menuSvc.menuFocused &&
+                  !menuSvc.textBasedMenuOption) {
+         menuSvc.set('menuFocused', false);
+         if (menuSvc.itemSelected) {
+           menuSvc.selectMenuItem(app.menuSelections[menuSvc.menuSelection]);
+         } else {
+           app.dialogueProfileImage.animations.play('default');
+         }
+         app.dialogueBorder.animations.play('selectdialogue');
+       } else if (menuSvc.menuEnabled && menuSvc.menuFocused &&
+                  menuSvc.textBasedMenuOption) {
+         menuSvc.set('menuFocused', false);
+         app.dialogueBorder.animations.play('selectdialogue');
+       } else if (menuSvc.menuEnabled) {
+         app.dialogueBorder.animations.play('selectdialogue');
+       }
      },
      confirm: function() {
+       if (app.currentState === 'mainmenu') {
+          _tempHackyMenuInput();
+       }
        if (app.dialogueSvc.lockDialogue) {
          if (app.dialogueSvc.blockerSprite.alive) {
            app.dialogueSvc.handleInputBlockerClick();
          }
          return;
        }
-       app.dialogueSvc.continueDialogue();
+       if (worldMapSvc.mapEnabledAndFocused()) {
+         if (!app.mapSelections[worldMapSvc.pinIndex].current()) {
+           app.mapSelections[worldMapSvc.pinIndex].onInputDown();
+         }
+       } else if (worldMapSvc.mapEnabledAndOutOfFocus()) {
+         app.dialogueBorder.animations.play('selectmenu');
+         menuSvc.selectMenuItem(app.menuSelections[menuSvc.menuSelection]);
+       } else if (menuSvc.menuFocused && app.menuSelections.length > 0) {
+         app.dialogueBorder.animations.play('selectmenu');
+         menuSvc.selectMenuItem(app.menuSelections[menuSvc.menuSelection]);
+         if (menuSvc.textBasedMenuOption) {
+           app.dialogueBorder.animations.play('selectdialogue');
+         }
+       } else {
+         app.dialogueSvc.continueDialogue();
+       }
+     },
+     initMenu: function() {
+       menuSvc.initMenu();
+     },
+     back: function() {
+       if (menuSvc.menuFocused || menuSvc.textBasedMenuOption) {
+         menuSvc.set('menuFocused', false);
+         if (menuSvc.itemSelected) {
+           menuSvc.selectMenuItem(app.menuSelections[menuSvc.menuSelection]);
+         }
+         app.dialogueBorder.animations.play('selectdialogue');
+       } else if (app.dialogueSvc.current &&
+           app.dialogueSvc.current.dialogueJSONID !== 'options' &&
+           app.dialogueSvc.current.optionsElement){
+        //   app.dialogueSvc.advanceDialogueState('options', true);
+       } else if (worldMapSvc.mapEnabled) {
+         menuSvc.defaultMenu(true);
+       }
      },
      toggleFullscreen: function() {
        cameraSvc.toggleFullscreen();
@@ -126,6 +252,7 @@ function(cameraSvc, dialogueHelpers) {
      this.left.onDown.add(svc.actions.selectLeft, this);
      this.right.onDown.add(svc.actions.selectRight, this);
      this.buttonA.onDown.add(svc.actions.confirm, this);
+     this.buttonB.onDown.add(svc.actions.back, this);
      this.buttonY.onDown.add(svc.actions.initMenu, this);
    }
 
@@ -142,6 +269,7 @@ function(cameraSvc, dialogueHelpers) {
      this.left.onDown.add(svc.actions.selectLeft, this);
      this.right.onDown.add(svc.actions.selectRight, this);
      this.enter.onDown.add(svc.actions.confirm, this);
+     this.shift.onDown.add(svc.actions.back, this);
    }
 
    svc.registerFullscreenButton = function() {

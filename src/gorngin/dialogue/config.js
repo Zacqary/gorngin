@@ -8,6 +8,18 @@ function() {
       align: "left",
       wordWrap: true,
     },
+    credits: {
+      font: "22px " + app.config.defaultfont,
+      fill: "#fff",
+      align: "center",
+      wordWrap: false,
+    },
+    stats: {
+      font: "12px " + app.config.defaultfont,
+      fill: "#fff",
+      align: "left",
+      wordWrap: true,
+    },
     speech: {
       font: "16px " + app.config.defaultfont,
       fill: "#fff",

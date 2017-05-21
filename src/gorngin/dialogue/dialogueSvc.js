@@ -41,7 +41,6 @@ function (combatDialogueSvc, combatConfig, portraitSvc, spriteClasses, cameraSvc
     dialogueConfig.setConfig(config);
     dialogueConfig = jQuery.extend(config, dialogueConfig);
     dialogueConfig = config;
-    console.log('DIALOGUE CONFIG', dialogueConfig);
   };
 
   svc.borderAnimationSignal = new Phaser.Signal();
@@ -499,7 +498,6 @@ function (combatDialogueSvc, combatConfig, portraitSvc, spriteClasses, cameraSvc
   svc.destroyDialogueGroup = function() {
     for (var i = 0; i < app.dialogueGroup.children.length; i ++) {
       if (app.dialogueGroup.children[i]._text) {
-        console.log('DESTROY: ', app.dialogueGroup.children[i]._text);
         app.dialogueGroup.children[i].kill();
         app.dialogueGroup.children[i].destroy();
       }
