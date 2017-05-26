@@ -27,10 +27,11 @@
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.1.0",
     "karma-phantomjs-launcher": "^1.0.4",
-    "karma-requirejs": "^1.1.0"
+    "karma-requirejs": "^1.1.0",
+    "webpack": "^2.6.1"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack"
   },
   "author": "Yutsi",
   "license": "ISC"
