@@ -75,7 +75,7 @@ function (dialogueConfig, combatVisualSvc, combatConfig, enemySvc,
     var portrait = turnSvc.getStats(id).portrait;
     var portraitTag = portrait ? 'p-' + portrait : '';
     var openMenuTag = 'event-open_stats_menu_for_' + id;
-    app.sm.events[app.sm.currentState]['open_stats_menu_for_' + id] = function() {
+    app.stateManager.events[app.stateManager.currentState]['open_stats_menu_for_' + id] = function() {
       svc.createCombatMenu(id);
     };
     var dialogue = [{
@@ -145,7 +145,7 @@ function (dialogueConfig, combatVisualSvc, combatConfig, enemySvc,
         } else {
           bodyText += '.';
         }
-        app.sm.events[app.sm.currentState][eventId] = function() {
+        app.stateManager.events[app.stateManager.currentState][eventId] = function() {
           turnSvc.attack(id, enemyId, attackValue);
           combatVisualSvc.addCombatBackgroundEffect('flashwhite');
           console.log(eventId);

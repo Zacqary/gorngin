@@ -4,3 +4,5 @@ build.zip
 .DS_STORE
 webkitbuilds
 cache
+bundle.js
+*.bundle.js

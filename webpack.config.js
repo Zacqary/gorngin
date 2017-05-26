@@ -1,7 +1,9 @@
+var path = require('path');
+
 module.exports = {
     entry: "./src/init.js",
     output: {
-        path: __dirname,
+        path: __dirname + '/src',
         filename: "bundle.js"
     },
     module: {
@@ -9,11 +11,11 @@ module.exports = {
         ]
     },
     resolve: {
+      modules:  [path.resolve(__dirname, "src"), "node_modules"],
       alias: {
-        states     : 'src/states',
-        gorngin    : 'src/gorngin',
-        jquery     : 'node_modules/jquery/dist/jquery.min'
-      },
-      modulesDirectories: ['node_modules']
+        jquery     : path.resolve(__dirname, 'node_modules/jquery/dist/jquery.min'),
+        gorngin    : path.resolve(__dirname, 'src/gorngin'),
+        states     : path.resolve(__dirname, 'src/states'),
+      }
     }
 };

@@ -9,13 +9,14 @@
 */
 
 define([
-        'services/menu/menuSvc',
-        'services/cameraSvc',
-        'services/worldMap/worldMapSvc',
-        'services/dialogue/dialogueHelpers'
+        'gorngin/cameraSvc',
+        'gorngin/dialogue/dialogueHelpers'
       ],
-function(menuSvc, cameraSvc, worldMapSvc, dialogueHelpers) {
+function(cameraSvc, dialogueHelpers) {
    var svc = {};
+   var menuSvc = app.menuSvc;
+   var worldMapSvc = app.worldMapSvc;
+
    svc.numberKeys = ['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX',
                       'SEVEN', 'EIGHT', 'NINE'];
 
@@ -58,15 +59,15 @@ function(menuSvc, cameraSvc, worldMapSvc, dialogueHelpers) {
 
    svc.actions = {
      selectUp: function() {
-       if (app.currentState === 'mainmenu') {
+       if (app.currentState  && app.currentState === 'mainmenu') {
          _tempHackyMenuSelector();
-       } else if (worldMapSvc.mapEnabled && app.mapSelections &&
+       } else if (worldMapSvc && worldMapSvc.mapEnabled && app.mapSelections &&
            worldMapSvc.mapOutOfFocus === true) {
          worldMapSvc.set('mapOutOfFocus', false);
          app.dialogueBorder.animations.play('selectMap');
        } else if (worldMapSvc.mapOutOfFocus === false) {
          app.dialogueBorder.animations.play('selectMap');
-       } else if (menuSvc.menuFocused && app.menuSelections.length > 0) {
+       } else if (menuSvc && menuSvc.menuFocused && app.menuSelections.length > 0) {
          if (menuSvc.itemSelected) {
            menuSvc.selectMenuItem(app.menuSelections[menuSvc.menuSelection]);
          } else {
@@ -83,7 +84,7 @@ function(menuSvc, cameraSvc, worldMapSvc, dialogueHelpers) {
      selectDown: function() {
        if (app.currentState === 'mainmenu') {
          _tempHackyMenuSelector();
-       } else if (worldMapSvc.mapEnabledAndFocused()) {
+       } else if (worldMapSvc && worldMapSvc.mapEnabledAndFocused()) {
          if (app.menuSelections.length === 0) {
            worldMapSvc.killMap();
          }

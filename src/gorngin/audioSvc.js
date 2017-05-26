@@ -1,6 +1,4 @@
-define(['jquery'], audioSvc);
-
-function audioSvc($){
+define(['jquery'], function($){
   var svc = {};
   var detectBrowser =  $('browser-player');
   if (!detectBrowser.length) {
@@ -32,6 +30,46 @@ function audioSvc($){
   svc.previousTrack = null;
 
   svc.themes = {
+    'menu': {
+      'name': 'opening',
+      'type': 'browser',
+      'id'  : 'mainmenu'
+    },
+    'highway': {
+      'name': 'livingroomting',
+      'type': 'browser',
+      'id'  : 'highway'
+    },
+    'bar': {
+      'name': 'norconoir',
+      'type': 'browser',
+      'id'  : 'bar'
+    },
+    'comebacktome': {
+      'name': 'comebacktome',
+      'type': 'browser',
+      'id'  : 'bike'
+    },
+    'conveniencestore': {
+      'name': 'cavejazz',
+      'type': 'browser',
+      'id'  : 'cavejazz'
+    },
+    'refinery': {
+      'name': 'refinery',
+      'type': 'browser',
+      'id'  : 'refinery'
+    },
+    'videostore': {
+      'name': 'norcotheme',
+      'type': 'browser',
+      'id'  : 'videostore'
+    },
+    'battle': {
+      'name': 'modarchive_musix-after',
+      'type': 'browser',
+      'id'  : 'battle'
+    }
   };
 
   svc.preloadTracks = function() {
@@ -50,11 +88,21 @@ function audioSvc($){
   };
 
   var volIndex = {
+    'battle': 1,
+    'comebacktome': 0.7,
+    'norconoir'   : 1,
+    'overworld'   : 0.15,
+    'livingroomting': 1,
+    'pleasantnightshit' : 0.5,
+    'deadofthebrainstaffroll': 0.2,
+    'serenitybells': 0.15,
+    'opening': 0.8,
+    'modarchive_a_new_frontend': 1
   };
 
   svc.playTrack = function(track){
     var vol = app.config.devStart ? app.config.music : volIndex[track.name];
-    console.log('PLAY TRACK', track);
+
     if (  svc.currentTrack === track ) { return; }
     svc.previousTrack = svc.currentTrack;
     svc.currentTrack = track;
@@ -64,7 +112,7 @@ function audioSvc($){
       var src= 'assets/audio/' + track.name;
       if (browserPlayer[0].canPlayType('audio/ogg')) {
         src = src + '.ogg';
-        console.log('PLAY OGG', src);
+
         browserPlayer.attr('src', src)[0];
       } else {
         src = src + '.mp3';
@@ -114,4 +162,4 @@ function audioSvc($){
 
 
   return svc;
-}
+});

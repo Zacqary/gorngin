@@ -5,10 +5,11 @@ define([
 function (spriteClasses){
 
   var svc = {};
+  var menuSvc = app.menuSvc;
 
   (function(){
     if (app.config.screencap_enabled && (app.config.devStart || app.config.camera_mode)) {
-      $('#wrapper').on('dblclick', function(){
+      $('#bummer').on('dblclick', function(){
         game.capture.screenshot(function(dataUrl) {
           window.open(dataUrl,
                '_blank');
@@ -159,26 +160,33 @@ function (spriteClasses){
     }
   };
 
-  svc.fadeInAndInitDialogue = function(state, initElement, cb) {
+  svc.openFrameAndInitDialogue = function(state, initElement, cb) {
     svc.fade('in');
-    if (app.config.enableFullscreen) {
-      svc.createFullscreenButton();
-    }
-    app.dialogueSvc.initializeDialogue(state, initElement, cb);
+    game.sound.play('cameraopen', 0.1);
+    app.dialogueBorder.play('openframe');
+    app.dialogueBorder.animations.currentAnim.onComplete.add(function() {
+      if (app.config.enableFullscreen) {
+        svc.createFullscreenButton();
+      }
+      app.dialogueSvc.initializeDialogue(state, initElement, cb);
+    });
   };
 
   svc.createFullscreenButton = function() {
-    app.stateManager.fullscreenButton = game.add.sprite(game.width - 30, 5, 'fullscreen');
-    app.stateManager.fullscreenButton.scale.setTo(0.9, 0.9);
-    app.stateManager.fullscreenButton.fixedToCamera = true;
-    app.stateManager.fullscreenButton.inputEnabled = true;
-    app.stateManager.fullscreenButton.useHandCursor = false;
-    app.stateManager.fullscreenButton.input.priorityID = 2;
+    if (!app.stateManager.puc) {
+      app.stateManager.puc = {};
+    }
+    app.stateManager.puc.fullscreenButton = game.add.sprite(game.width - 30, 5, 'fullscreen');
+    app.stateManager.puc.fullscreenButton.scale.setTo(0.9, 0.9);
+    app.stateManager.puc.fullscreenButton.fixedToCamera = true;
+    app.stateManager.puc.fullscreenButton.inputEnabled = true;
+    app.stateManager.puc.fullscreenButton.useHandCursor = false;
+    app.stateManager.puc.fullscreenButton.input.priorityID = 2;
     if (game.scale.isFullScreen) {
-      app.stateManager.fullscreenButton.alpha = 0;
+      app.stateManager.puc.fullscreenButton.alpha = 0;
     }
 
-    app.stateManager.fullscreenButton.events.onInputDown.add(svc.toggleFullscreen);
+    app.stateManager.puc.fullscreenButton.events.onInputDown.add(svc.toggleFullscreen);
   };
 
   svc.toggleFullscreen = function(){
@@ -233,6 +241,10 @@ function (spriteClasses){
     }
   };
 
+  /*
+    @TODO: Terminate the cycleSprites function correctly in the main menu
+  */
+
   svc.cycleSprites = function(group, time, transition, cb) {
     var i = 0;
     var groupChildren = group.children ? group.children : group;
@@ -265,7 +277,6 @@ function (spriteClasses){
     _next = function() {
       i ++;
       if (i === groupChildren.length) {
-
         cb();
       } else {
         _tweenIn(groupChildren[i]);
@@ -274,17 +285,29 @@ function (spriteClasses){
     _tweenIn(groupChildren[i]);
   };
 
-  svc.fade = function(type, cb) {
+  svc.getBlackScreen = function() {
+    var bmp = game.add.bitmapData(game.world.width, game.world.height + 50);
+    bmp.ctx.rect(0, 0, game.world.width, game.world.height + 50);
+    bmp.ctx.fillStyle = app.config.backgroundColor;
+    bmp.ctx.fill();
+
+    var sprite = game.add.sprite(0, 0, bmp);
+    sprite.alpha = 1;
+
+    return sprite;
+  };
+
+  svc.fade = function(type, cb, time) {
     var fromAlpha = type === 'in' ? 1 : 0;
     var toAlpha = type === 'in' ? 0 : 1;
-    var fade = game.add.bitmapData(game.world.width, game.world.height + 50);
-    fade.ctx.rect(0, 0, game.world.width, game.world.height + 50);
-    fade.ctx.fillStyle = app.config.backgroundColor;
-    fade.ctx.fill();
+    var fadeBmp = game.add.bitmapData(game.world.width, game.world.height + 50);
+    fadeBmp.ctx.rect(0, 0, game.world.width, game.world.height + 50);
+    fadeBmp.ctx.fillStyle = app.config.backgroundColor;
+    fadeBmp.ctx.fill();
 
-    app.fadeSprite = game.add.sprite(0, 0, fade);
+    app.fadeSprite = game.add.sprite(0, 0, fadeBmp);
     app.fadeSprite.alpha = fromAlpha;
-    var fade = game.add.tween(app.fadeSprite).to( { alpha: toAlpha }, 500, Phaser.Easing.Linear.None, true).start();
+    var fade = game.add.tween(app.fadeSprite).to( { alpha: toAlpha }, (time || 500), Phaser.Easing.Linear.None, true).start();
     if (cb) {
       fade.onComplete.add(cb, this);
     }
@@ -294,15 +317,19 @@ function (spriteClasses){
     foregroundGroup = game.add.group();
 
     var _defaultForegroundElements = [
+      app.combatBackgroundGroup,
+      app.enemyGroup,
       app.dialoguePortraitGroup,
       app.menuDisplayGroup,
       app.menuTextGroup,
       app.dialogueBorder,
       app.dialogueGroup,
       app.dialogueTextGroup,
-      app.stateManager.currentDialogue.followupIcon,
+      app.dialogueManager.followupIcon,
+      app.combatGroup,
       app.stateManager.puc.fullscreenButton,
       app.fadeSprite,
+      app.coverGroup,
       app.loadGroup
     ];
 

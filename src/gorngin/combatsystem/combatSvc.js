@@ -17,7 +17,7 @@ function(dialogueConfig, spriteClasses, combatDialogueSvc, turnSvc,
     var participant;
 
     if (!combatConfig.active) {
-      app.sm.events[app.sm.currentState].endbattle = function() {
+      app.stateManager.events[app.stateManager.currentState].endbattle = function() {
         svc.endCombat();
       };
       audioSvc.crossfadetrack('battle', 900);
