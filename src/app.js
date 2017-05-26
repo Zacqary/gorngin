@@ -1,3 +1,7 @@
+window.phaser = require('../node_modules/phaser/build/phaser.min.js');
+window.$ = window.jquery = window.jQuery = require('../node_modules/jquery/dist/jquery.min.js');
+
+
 var app = {};
 var music;
 app.dialogueManager = {};
